@@ -1,0 +1,35 @@
+{
+    "name": "clk528/nyu-jiaowei",
+    "description": "NYU教委项目",
+    "type": "library",
+    "license": "MIT",
+    "version": "1.0",
+    "authors": [
+        {
+            "name": "clk",
+            "email": "clk528@qq.com"
+        },
+        {
+            "name": "local",
+            "email": "local.clk@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "encore/laravel-admin": "^1.8",
+        "laravel/framework": "^6.2|^7.0|^8.0",
+        "maatwebsite/excel": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "clk528\\NyuJiaoWei\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "clk528\\NyuJiaoWei\\NyuJiaoweiProvinder"
+            ]
+        }
+    }
+}
