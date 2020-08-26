@@ -2,6 +2,8 @@
 
 namespace clk528\NyuJiaoWei;
 
+use Illuminate\Support\ServiceProvider;
+
 class NyuJiaoweiProvinder extends ServiceProvider{
     public function boot(){
         if ($this->app->runningInConsole()) {
