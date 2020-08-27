@@ -14,7 +14,7 @@ class CreateShnyuJkxxSsjbxxPostTable extends Migration
     public function up()
     {
         Schema::create('shnyu_jkxx_ssjbxx_post', function (Blueprint $table) {
-            $table->id('ID');
+            $table->increments('ID');
 
             $table->string('NetID', 10)->unique()->comment('NetId');
             $table->string('XM', 120)->comment('姓名');

@@ -14,7 +14,7 @@ class CreateShnyuJkxxSsjbxxGetTable extends Migration
     public function up()
     {
         Schema::create('shnyu_jkxx_ssjbxx_get', function (Blueprint $table) {
-            $table->id('t_id');
+            $table->increments('t_id');
 
             $table->string('ID', 10)->unique();
 
