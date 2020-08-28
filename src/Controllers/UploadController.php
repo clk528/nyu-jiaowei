@@ -95,7 +95,7 @@ class UploadController extends AdminController
         $form->file("excel", "Excel File")->rules('mimes:xlsx')->required();
 
         $form->t("template", "Excel Template")->with(function () {
-            return "<a href='javascript:void(0);'>Download Template</a>";
+            return "<a href='/upload-template.xlsx'>Download Template</a>";
         });
 
         $form->hidden('route');
