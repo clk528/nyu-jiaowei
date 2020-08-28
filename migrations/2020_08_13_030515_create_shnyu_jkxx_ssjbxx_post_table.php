@@ -20,7 +20,7 @@ class CreateShnyuJkxxSsjbxxPostTable extends Migration
             $table->string('XM', 120)->comment('姓名');
             $table->tinyInteger('ID_Type')->comment('证件类型 0=身份证,1=台港澳通行证,2=护照');
             $table->string('ZJHM', 32)->comment('证件号码');
-            $table->string('SJH',30)->comment('手机号');
+            $table->string('SJH',30)->nullable()->comment('手机号');
             $table->string('SFLX', 32)->comment('身份类型');
             $table->integer('Subtype')->comment('身份子类型,参见字典');
             $table->string('XXMC', 120)->default('上海纽约大学')->comment('学校名称');
