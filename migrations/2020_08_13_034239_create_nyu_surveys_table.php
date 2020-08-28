@@ -16,6 +16,7 @@ class CreateNyuSurveysTable extends Migration
         Schema::create('nyu_surveys', function (Blueprint $table) {
             $table->increments('id');
             $table->string('netId', 10)->unique()->comment('NetId');
+            $table->string('email', 20)->unique()->comment('email');
             $table->timestamps();
         });
     }

@@ -5,6 +5,7 @@ namespace clk528\NyuJiaoWei\Commands;
 
 
 use clk528\NyuJiaoWei\Imports\SurveyImport;
+use clk528\NyuJiaoWei\Models\NyuSurvey;
 use Illuminate\Console\Command;
 use Maatwebsite\Excel\Excel;
 
@@ -35,6 +36,53 @@ class ImportSurveyExcelCommand extends Command
             return;
         }
 
-        Excel::import(new SurveyImport(), $this->file);
+        $this->getSurveys();
+    }
+
+    private function getSurveys()
+    {
+        $data = file_get_contents($this->file);
+        $data = json_decode($data, true);
+
+        foreach ($data['responses'] as $item) {
+            $email = $this->getEmail($item);
+
+            if (empty($email)) {
+                continue;
+            }
+
+            $user = explode('@', $email);
+
+            $import = NyuSurvey::query()->where('netId', $user[0])->first();
+
+            if (empty($import)) {
+                $import = NyuSurvey::query()->create([
+                    'netId' => $user[0],
+                    'email' => $email
+                ]);
+            }
+        }
+    }
+
+    private function getEmail(array $item)
+    {
+        $values = $item['values'] ?? null;
+
+        if (empty($values)) {
+            return null;
+        }
+
+        $finished = $values['finished'] ?? 0;
+        if($finished !== 1){
+            $this->error("c");
+            return null;
+        }
+
+        $email = $values['NetID Email'] ?? null;
+        if (empty($email)) {
+            return null;
+        }
+
+        return $email;
     }
 }

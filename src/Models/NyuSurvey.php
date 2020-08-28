@@ -10,5 +10,5 @@ class NyuSurvey extends Model
 {
     protected $table = 'nyu_surveys';
 
-    protected $fillable = ['netId'];
+    protected $fillable = ['netId','email'];
 }

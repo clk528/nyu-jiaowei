@@ -55,9 +55,13 @@ class NyuJiaoWei
                 });
             });
 
-            $router->resource('audit', 'AuditController', [
-                'as' => config('admin.route.prefix') . '.',
-            ]);
+            $router->resource('audit', 'AuditController',[
+                'as' => 'admin.'
+            ])->only('index');
+
+            $router->resource('survery', 'SurveryController',[
+                'as' => 'admin.'
+            ])->only('index');
         });
     }
 }
