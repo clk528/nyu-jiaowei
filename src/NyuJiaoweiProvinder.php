@@ -2,18 +2,20 @@
 
 namespace clk528\NyuJiaoWei;
 
+use clk528\NyuJiaoWei\Commands\EnabledAccessCommand;
 use clk528\NyuJiaoWei\Commands\DownLoadSurveryCommand;
 use clk528\NyuJiaoWei\Commands\ImportSurveyExcelCommand;
-use clk528\NyuJiaoWei\Commands\SyncAccessCommand;
+use clk528\NyuJiaoWei\Commands\DisableAccessCommand;
 use Illuminate\Support\ServiceProvider;
 
 class NyuJiaoweiProvinder extends ServiceProvider
 {
 
     protected $commands = [
-        SyncAccessCommand::class,
+        DisableAccessCommand::class,
         ImportSurveyExcelCommand::class,
-        DownLoadSurveryCommand::class
+        DownLoadSurveryCommand::class,
+        EnabledAccessCommand::class
     ];
 
     public function boot()
