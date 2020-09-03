@@ -7,6 +7,7 @@ use App\Services\AccessService;
 use clk528\NyuJiaoWei\Models\NyuStudent;
 use clk528\NyuJiaoWei\Models\NyuSurvey;
 use clk528\NyuJiaoWei\Models\RealNameUser;
+use GuzzleHttp\Client;
 
 class SyncAccessCommand extends BaseCommand
 {
@@ -22,6 +23,8 @@ class SyncAccessCommand extends BaseCommand
 
     private $app;
 
+    private $client;
+
     public function __construct(AccessService $accessService)
     {
         parent::__construct();
@@ -34,10 +37,15 @@ class SyncAccessCommand extends BaseCommand
         if (!is_dir($this->logPath)) {
             mkdir($this->logPath);
         }
+
+        $this->client = new Client([
+            'base_uri' => 'https://review.shanghai.nyu.edu'
+        ]);
     }
 
     function handle()
     {
+//        $this->realNameIsSuccess('jz71');
         $pageSize = 200;
         $page = 1;
 
@@ -186,7 +194,6 @@ class SyncAccessCommand extends BaseCommand
      */
     private function surveryIsSuccess($netid)
     {
-//        return true;
         return NyuSurvey::query()->where('netId', $netid)->count() > 0;
     }
 
@@ -197,13 +204,22 @@ class SyncAccessCommand extends BaseCommand
      */
     private function realNameIsSuccess($netId)
     {
-//        return true;
-        return RealNameUser::query()->where([
-                'health_code' => 1,// => 1
-                'tour_code' => 1,// => 1
-                'health' => 1,// => 1
-                'netid' => $netId,
-            ])->count() > 0;
+        $response = $this->client->post('/api/realname/realnameUser/queryByNetIds', [
+            'json' => [
+                'netIds' => [
+                    $netId
+                ]
+            ]
+        ]);
+        $result = json_decode($response->getBody()->getContents(), true);
+        $this->info("第{$this->index}个人，NetId:{$netId}申报结果:||" . json_encode($result, JSON_UNESCAPED_UNICODE));
+        $data = $result['result'] ?? [];
+        if ($data) {
+            $user = $data[0];
+            return !$user['health'] && !$user['tourCode'] && !$user['healthCode'];
+        } else {
+            return false;
+        }
     }
 
     /**

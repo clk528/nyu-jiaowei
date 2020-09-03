@@ -3,7 +3,7 @@
     "description": "NYU教委项目",
     "type": "library",
     "license": "MIT",
-    "version": "4.3",
+    "version": "4.4",
     "authors": [
         {
             "name": "clk",
@@ -17,6 +17,7 @@
     "require": {
         "php": ">=7.0.0",
         "encore/laravel-admin": "^1.8",
+        "guzzlehttp/guzzle": "^6.3|^7.0",
         "laravel/framework": "^6.2|^7.0|^8.0",
         "maatwebsite/excel": "^3.0"
     },
