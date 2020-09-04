@@ -13,12 +13,11 @@ use GuzzleHttp\Client;
 
 class EnabledAccessCommand extends BaseCommand
 {
+    use JiaoweiTrait;
 
     protected $name = "jiaowei:enable-access";
 
     protected $description = "检查封禁了权限的人，检查完成情况并对其进行解封";
-
-    use JiaoweiTrait;
 
     protected $taotal = 0;
 

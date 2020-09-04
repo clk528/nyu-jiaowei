@@ -108,7 +108,7 @@ class DisableAccessCommand extends BaseCommand
                 'status' => 'alert',//设置为警告状态
                 'alert_total' => 1
             ])->save();
-            $this->sendWeChatMessage($student->netId, "Dear {$student->netId}, your health declaration and safety training have not been completed yet! Please finish as soon as possible~ Declaration link：https://review.shanghai.nyu.edu/health-declaration");
+            $this->sendWeChatMessage($student->netId, "Please submit your health declaration form as soon as possible, otherwise your campus access will be removed! \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
             $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，系统对其第1次提醒");
             return;
         }
@@ -119,7 +119,7 @@ class DisableAccessCommand extends BaseCommand
                     'status' => 'disabled',
                 ])->save();
                 $this->decrAccess($student->netId);
-                $this->sendWeChatMessage($student->netId, "Dear {$student->netId}, your health declaration and safety training have not been completed! We will ban your permission! Please finish it quickly! So as not to delay your studies.Declaration link：https://review.shanghai.nyu.edu/health-declaration");
+                $this->sendWeChatMessage($student->netId, "Sorry to inform you that your campus access has been removed.\nPlease submit your health declaration form as soon as possible. \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
 //                $this->sendWeChatMessage($student->netId, "Dear {$student->netId}, because your health declaration has not been completed! We will ban your permission! Please finish it quickly! So as not to delay your studies. Declaration link：https://review.shanghai.nyu.edu/health-declaration");
                 $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，并且已经提醒了{$student->alert_total}次,现在对其权限予以封禁");
                 return;
@@ -132,7 +132,7 @@ class DisableAccessCommand extends BaseCommand
                 'alert_total' => $alertTotal
             ])->save();
 
-            $this->sendWeChatMessage($student->netId, "Dear {$student->netId}, your health declaration and safety training have not been completed yet! Please finish as soon as possible~ Declaration link：https://review.shanghai.nyu.edu/health-declaration");
+            $this->sendWeChatMessage($student->netId, "Please submit your health declaration form as soon as possible, otherwise your campus access will be removed! \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
             $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，进行第{$alertTotal}次提醒");
             return;
         }
