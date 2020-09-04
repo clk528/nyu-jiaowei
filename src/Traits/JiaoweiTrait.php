@@ -42,8 +42,8 @@ trait JiaoweiTrait
      */
     private function surveryIsSuccess($netid)
     {
-//        return true;
-        return NyuSurvey::query()->where('netId', $netid)->count() > 0;
+        return true;
+//        return NyuSurvey::query()->where('netId', $netid)->count() > 0;
     }
 
     /**

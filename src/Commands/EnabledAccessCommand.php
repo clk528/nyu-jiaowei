@@ -92,19 +92,19 @@ class EnabledAccessCommand extends BaseCommand
                 $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}状态正常跳过");
                 break;
             case 'disabled':
+                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训予以解封");
+                $this->incrAccess($student->netId);
                 $student->fill([
                     'status' => 'enabled',//恢复状态
+                    'alert_total' => 0
                 ])->save();
-                $this->incrAccess($student->netId);
                 $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration and safety training! Your access privileges are restored now.");
-                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训予以解封");
                 break;
             case 'alert':
+                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训状态恢复正常");
                 $student->fill([
                     'status' => 'enabled',//恢复状态
                 ])->save();
-                $this->incrAccess($student->netId);
-                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训予以解封");
                 break;
             default:
                 break;
