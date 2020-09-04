@@ -29,7 +29,7 @@ class SyncAccessCommand extends BaseCommand
     {
         parent::__construct();
         $this->accessService = $accessService;
-        $this->app = \EasyWeChat::work();
+        $this->app = \EasyWeChat::work(config('jiaowei.wechat'));
         $this->fileName = date('Y-m-d-H-i') . '.log';
 
         $this->logPath = storage_path('logs/checkHealth');

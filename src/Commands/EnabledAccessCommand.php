@@ -28,7 +28,7 @@ class EnabledAccessCommand extends BaseCommand
     {
         parent::__construct();
         $this->accessService = $accessService;
-        $this->app = \EasyWeChat::work();
+        $this->app = \EasyWeChat::work(config('jiaowei.wechat'));
         $this->fileName = date('Y-m-d-H-i') . '-enable.log';
 
         $this->logPath = storage_path('logs/checkHealth');
@@ -76,7 +76,7 @@ class EnabledAccessCommand extends BaseCommand
             if ($this->surveryIsSuccess($student->netId) && $this->realNameIsSuccess($student->netId)) { // 都完成了
                 $this->boom($student);
             } else {
-                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}没有完成入学申报和安全培训，不符合解封条件");
+                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}没有完成健康申报和安全培训，不符合解封条件");
             }
             $this->index += 1;
         }
@@ -97,15 +97,15 @@ class EnabledAccessCommand extends BaseCommand
                     'status' => 'enabled',//恢复状态
                 ])->save();
                 $this->incrAccess($student->netId);
-                $this->sendWeChatMessage($student->netId, "亲爱的{$student->netId}您好，恭喜您完成了入学申报和安全培训！您的权限已放开！");
-                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了入学申报和安全培训予以解封");
+                $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration and safety training! Your access privileges are restored now.");
+                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训予以解封");
                 break;
             case 'alert':
                 $student->fill([
                     'status' => 'enabled',//恢复状态
                 ])->save();
                 $this->incrAccess($student->netId);
-                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了入学申报和安全培训予以解封");
+                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训予以解封");
                 break;
             default:
                 break;

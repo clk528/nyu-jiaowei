@@ -28,7 +28,7 @@ class DisableAccessCommand extends BaseCommand
     {
         parent::__construct();
         $this->accessService = $accessService;
-        $this->app = \EasyWeChat::work();
+        $this->app = \EasyWeChat::work(config('jiaowei.wechat'));
         $this->fileName = date('Y-m-d-H-i') . '-disable.log';
 
         $this->logPath = storage_path('logs/checkHealth');
@@ -75,7 +75,16 @@ class DisableAccessCommand extends BaseCommand
     {
         foreach ($data as $student) {
             if ($this->surveryIsSuccess($student->netId) && $this->realNameIsSuccess($student->netId)) { // 都完成了的
-                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}已经完成了入学申报和安全培训");
+
+                if ($student->status == 'alert') {
+                    $student->fill([
+                        'status' => 'enabled',//设置正常状态
+                        'alert_total' => 0
+                    ])->save();
+                    $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}已经完成了健康申报和安全培训,恢复它正常状态");
+                } else {
+                    $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}已经完成了健康申报和安全培训");
+                }
             } else {
                 $this->fireInthHole($student);
             }
@@ -90,7 +99,7 @@ class DisableAccessCommand extends BaseCommand
     private function fireInthHole(NyuStudent $student)
     {
         if ($student->status == "disabled") {//禁用状态
-            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成入学申报和安全培训，系统已将其禁用");
+            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，系统已将其禁用");
             return;
         }
 
@@ -99,8 +108,8 @@ class DisableAccessCommand extends BaseCommand
                 'status' => 'alert',//设置为警告状态
                 'alert_total' => 1
             ])->save();
-            $this->sendWeChatMessage($student->netId, "亲爱的{$student->netId}您好，您的入学申报和安全培训还未完成！请尽快去完成哦～第1次提醒.");
-            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成入学申报和安全培训，系统对其第1次提醒");
+            $this->sendWeChatMessage($student->netId, "Dear {$student->netId}, your health declaration and safety training have not been completed yet! Please finish as soon as possible~ Declaration link：https://review.shanghai.nyu.edu/health-declaration");
+            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，系统对其第1次提醒");
             return;
         }
 
@@ -110,8 +119,9 @@ class DisableAccessCommand extends BaseCommand
                     'status' => 'disabled',
                 ])->save();
                 $this->decrAccess($student->netId);
-                $this->sendWeChatMessage($student->netId, "亲爱的{$student->netId}您好，由于您的入学申报和安全培训未完成！我们将经封禁了您权限！请赶快完成！以免耽误您的学业。");
-                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成入学申报和安全培训，并且已经提醒了{$student->alert_total}次,现在对其权限予以封禁");
+                $this->sendWeChatMessage($student->netId, "Dear {$student->netId}, your health declaration and safety training have not been completed! We will ban your permission! Please finish it quickly! So as not to delay your studies.Declaration link：https://review.shanghai.nyu.edu/health-declaration");
+//                $this->sendWeChatMessage($student->netId, "Dear {$student->netId}, because your health declaration has not been completed! We will ban your permission! Please finish it quickly! So as not to delay your studies. Declaration link：https://review.shanghai.nyu.edu/health-declaration");
+                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，并且已经提醒了{$student->alert_total}次,现在对其权限予以封禁");
                 return;
             }
 
@@ -122,10 +132,8 @@ class DisableAccessCommand extends BaseCommand
                 'alert_total' => $alertTotal
             ])->save();
 
-            $this->sendWeChatMessage($student->netId, "亲爱的{$student->netId}您好，您的入学申报和安全培训还未完成！请尽快去完成哦～第{$alertTotal}次提醒.");
-
-            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成入学申报和安全培训，进行第{$alertTotal}次提醒");
-
+            $this->sendWeChatMessage($student->netId, "Dear {$student->netId}, your health declaration and safety training have not been completed yet! Please finish as soon as possible~ Declaration link：https://review.shanghai.nyu.edu/health-declaration");
+            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，进行第{$alertTotal}次提醒");
             return;
         }
     }
