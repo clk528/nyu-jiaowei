@@ -7,6 +7,7 @@ namespace clk528\NyuJiaoWei\Commands;
 use App\Console\Commands\BaseCommand;
 use App\Services\AccessService;
 use clk528\NyuJiaoWei\Models\NyuStudent;
+use clk528\NyuJiaoWei\Models\NyuStudentExpire;
 use clk528\NyuJiaoWei\Models\NyuSurvey;
 use clk528\NyuJiaoWei\Traits\JiaoweiTrait;
 use GuzzleHttp\Client;
@@ -92,23 +93,32 @@ class EnabledAccessCommand extends BaseCommand
                 $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}状态正常跳过");
                 break;
             case 'disabled':
-                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训予以解封");
-                $this->incrAccess($student->netId);
-                $student->fill([
-                    'status' => 'enabled',//恢复状态
-                    'alert_total' => 0
-                ])->save();
-                $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration and safety training! Your access privileges are restored now.");
+                $this->enable($student);
                 break;
             case 'alert':
                 $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训状态恢复正常");
                 $student->fill([
                     'status' => 'enabled',//恢复状态
+                    'alert_total' => 0
                 ])->save();
                 break;
             default:
                 break;
         }
+    }
+
+    private function enable(NyuStudent $student)
+    {
+        if ($this->studentExpire($student)) {
+            return;
+        }
+        $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训予以解封");
+//        $this->incrAccess($student->netId);
+        $student->fill([
+            'status' => 'enabled',//恢复状态
+            'alert_total' => 0
+        ])->save();
+//        $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration and safety training! Your access privileges are restored now.");
     }
 
     /**
@@ -120,5 +130,29 @@ class EnabledAccessCommand extends BaseCommand
     private function getNyuStudents($page = 1, $pageSize = 200)
     {
         return NyuStudent::query()->where('status', 'disabled')->paginate($pageSize, ['*'], 'page', $page);
+    }
+
+    /**
+     * 查看是否达到解封条件
+     * @param $netId
+     * @return bool
+     */
+    private function studentExpire(NyuStudent $student)
+    {
+        $expire = NyuStudentExpire::query()->where('netId', $student->netId)->first();
+
+        if (empty($expire)) {
+            return false;
+        }
+
+        $currentDate = (int)date("Ymd");
+
+        $expireDate = (int)str_replace("-", "", $expire->expire);
+
+        if ($currentDate < $expireDate) {
+            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}解封日期为：{$expire->expire}，不能解封");
+            return true;
+        }
+        return false;
     }
 }
