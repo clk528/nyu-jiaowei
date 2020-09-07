@@ -113,12 +113,12 @@ class EnabledAccessCommand extends BaseCommand
             return;
         }
         $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训予以解封");
-//        $this->incrAccess($student->netId);
+        $this->incrAccess($student->netId);
         $student->fill([
             'status' => 'enabled',//恢复状态
             'alert_total' => 0
         ])->save();
-//        $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration and safety training! Your access privileges are restored now.");
+        $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration and safety training! Your access privileges are restored now.");
     }
 
     /**
