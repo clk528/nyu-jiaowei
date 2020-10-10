@@ -86,7 +86,8 @@ class DisableAccessCommand extends BaseCommand
                     $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}已经完成了健康申报和安全培训");
                 }
             } else {
-                $this->fireInthHole($student);
+//                $this->fireInthHole($student);
+                $this->kill($student);
             }
             $this->index += 1;
         }
@@ -137,6 +138,29 @@ class DisableAccessCommand extends BaseCommand
             $this->sendWeChatMessage($student->netId, "Please submit your health declaration form as soon as possible, otherwise your campus access will be removed! \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
             return;
         }
+    }
+
+    /**
+     * @param NyuStudent $student
+     */
+    private function kill(NyuStudent $student)
+    {
+        if ($student->status == "disabled") {//禁用状态
+            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，系统已将其禁用");
+            return;
+        }
+
+        $this->decrAccess($student->netId);
+
+        $student->fill([
+            'status' => 'disabled',
+        ])->save();
+
+        $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，对其权限予以封禁");
+
+        $this->sendWeChatMessage($student->netId, "Sorry to inform you that your campus access has been removed.\nPlease submit your health declaration form as soon as possible. \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
+
+        return;
     }
 
     /**
