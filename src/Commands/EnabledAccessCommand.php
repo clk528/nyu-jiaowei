@@ -6,6 +6,7 @@ namespace clk528\NyuJiaoWei\Commands;
 
 use App\Console\Commands\BaseCommand;
 use App\Services\AccessService;
+use clk528\NyuJiaoWei\Jobs\SendAccessEnabledJob;
 use clk528\NyuJiaoWei\Models\NyuStudent;
 use clk528\NyuJiaoWei\Models\NyuStudentExpire;
 use clk528\NyuJiaoWei\Models\NyuSurvey;
@@ -119,6 +120,7 @@ class EnabledAccessCommand extends BaseCommand
             'alert_total' => 0
         ])->save();
         $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration and safety training! Your access privileges are restored now.");
+        dispatch(new SendAccessEnabledJob($student->netId));
     }
 
     /**

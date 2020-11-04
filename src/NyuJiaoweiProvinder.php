@@ -20,6 +20,8 @@ class NyuJiaoweiProvinder extends ServiceProvider
 
     public function boot()
     {
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'nyu-jiaowei-views');
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../migrations' => database_path('migrations')
