@@ -6,6 +6,7 @@ use clk528\NyuJiaoWei\Commands\EnabledAccessCommand;
 use clk528\NyuJiaoWei\Commands\DownLoadSurveryCommand;
 use clk528\NyuJiaoWei\Commands\ImportSurveyExcelCommand;
 use clk528\NyuJiaoWei\Commands\DisableAccessCommand;
+use clk528\NyuJiaoWei\Commands\TestCommand;
 use Illuminate\Support\ServiceProvider;
 
 class NyuJiaoweiProvinder extends ServiceProvider
@@ -15,7 +16,8 @@ class NyuJiaoweiProvinder extends ServiceProvider
         DisableAccessCommand::class,
         ImportSurveyExcelCommand::class,
         DownLoadSurveryCommand::class,
-        EnabledAccessCommand::class
+        EnabledAccessCommand::class,
+        TestCommand::class
     ];
 
     public function boot()

@@ -2,8 +2,10 @@
     "name": "clk528/nyu-jiaowei",
     "description": "NYU教委项目",
     "type": "library",
+    "homepage": "https://github.com/clk528/nyu-jiaowei",
+    "time": "2020-12-08",
     "license": "MIT",
-    "version": "5.1",
+    "version": "5.2",
     "authors": [
         {
             "name": "clk",

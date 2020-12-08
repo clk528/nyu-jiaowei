@@ -53,7 +53,6 @@ trait JiaoweiTrait
      */
     private function realNameIsSuccess($netId)
     {
-//        return true;
         $response = $this->client->post('/api/realname/realnameUser/queryByNetIds', [
             'json' => [
                 'netIds' => [
@@ -64,12 +63,39 @@ trait JiaoweiTrait
         $result = json_decode($response->getBody()->getContents(), true);
         $this->info("第{$this->index}个人，NetId:{$netId}申报结果:||" . json_encode($result, JSON_UNESCAPED_UNICODE));
         $data = $result['result'] ?? [];
-        if ($data) {
-            $user = $data[0];
-            return !$user['health'] && !$user['tourCode'] && !$user['healthCode'];
-        } else {
+
+        if (empty($data)) {
             return false;
         }
+
+        $user = $data[0];
+
+        if (empty($user)) {
+            return false;
+        }
+
+        if ($this->workFlowExpireTime($user['returnTime'] ?? null, $netId)) {
+            return false;
+        }
+
+        return !$user['health'] && !$user['tourCode'] && !$user['healthCode'];
+    }
+
+    private function workFlowExpireTime($expireTime, $netId)
+    {
+        if (empty($expireTime)) {
+            return false;
+        }
+
+        $currentDate = time();
+
+        $expireDate = strtotime($expireTime);
+
+        if ($currentDate < $expireDate) {
+            $this->info("第{$this->index}个人，NetId:{$netId}解封日期为：{$expireTime}，不能解封");
+            return false;
+        }
+        return true;
     }
 
 

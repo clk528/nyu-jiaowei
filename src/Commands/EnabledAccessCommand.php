@@ -94,6 +94,7 @@ class EnabledAccessCommand extends BaseCommand
                 $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}状态正常跳过");
                 break;
             case 'disabled':
+                $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训状态恢复正常");
                 $this->enable($student);
                 break;
             case 'alert':
