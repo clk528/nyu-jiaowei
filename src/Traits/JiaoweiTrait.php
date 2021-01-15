@@ -74,7 +74,7 @@ trait JiaoweiTrait
             return false;
         }
 
-        if ($this->endTime2021($user['endTime'] ?? null)) {
+        if ($this->endTime2021($user['endTime'] ?? null, $netId)) {
             return false;
         }
 
@@ -85,7 +85,7 @@ trait JiaoweiTrait
         return !$user['health'] && !$user['tourCode'] && !$user['healthCode'];
     }
 
-    private function endTime2021($endTime)
+    private function endTime2021($endTime, $netId)
     {
         if (empty($endTime)) {
             return true;
