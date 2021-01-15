@@ -74,11 +74,33 @@ trait JiaoweiTrait
             return false;
         }
 
+        if ($this->endTime2021($user['endTime'] ?? null)) {
+            return false;
+        }
+
         if ($this->workFlowExpireTime($user['returnTime'] ?? null, $netId)) {
             return false;
         }
 
         return !$user['health'] && !$user['tourCode'] && !$user['healthCode'];
+    }
+
+    private function endTime2021($endTime)
+    {
+        if (empty($endTime)) {
+            return true;
+        }
+
+        $now = strtotime("2021-01-01 00:00:00");
+        $reportTime = strtotime($endTime);
+
+        if ($reportTime >= $now) {
+            $this->info("第{$this->index}个人，NetId:{$netId}报告日期为：{$endTime}，可以解封");
+            return false;
+        } else {
+            $this->info("第{$this->index}个人，NetId:{$netId}报告日期为：{$endTime}，不可以解封");
+            return true;
+        }
     }
 
     private function workFlowExpireTime($expireTime, $netId)
