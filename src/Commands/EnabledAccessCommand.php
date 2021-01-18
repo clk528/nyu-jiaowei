@@ -74,7 +74,7 @@ class EnabledAccessCommand extends BaseCommand
     private function runExecute(array $data)
     {
         foreach ($data as $student) {
-            if ($this->surveryIsSuccess($student->netId) && $this->realNameIsSuccess($student->netId)) { // 都完成了
+            if ($this->surveryIsSuccess($student->netId) && $this->realNameIsSuccess($student->netId, true)) { // 都完成了
                 $this->boom($student);
             } else {
                 $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}没有完成健康申报和安全培训，不符合解封条件");

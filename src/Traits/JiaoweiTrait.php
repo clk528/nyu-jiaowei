@@ -51,7 +51,7 @@ trait JiaoweiTrait
      * @param $netId
      * @return bool
      */
-    private function realNameIsSuccess($netId)
+    private function realNameIsSuccess($netId, $isEnableMode = false)
     {
         $response = $this->client->post('/api/realname/realnameUser/queryByNetIds', [
             'json' => [
@@ -74,8 +74,10 @@ trait JiaoweiTrait
             return false;
         }
 
-        if ($this->endTime2021($user['endTime'] ?? null, $netId)) {
-            return false;
+        if ($isEnableMode) { // 如果是调用模式
+            if ($this->endTime2021($user['endTime'] ?? null)) {
+                return false;
+            }
         }
 
         if ($this->workFlowExpireTime($user['returnTime'] ?? null, $netId)) {
@@ -85,7 +87,7 @@ trait JiaoweiTrait
         return !$user['health'] && !$user['tourCode'] && !$user['healthCode'];
     }
 
-    private function endTime2021($endTime, $netId)
+    private function endTime2021($endTime)
     {
         if (empty($endTime)) {
             return true;
