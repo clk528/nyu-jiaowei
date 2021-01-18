@@ -149,18 +149,23 @@ class DisableAccessCommand extends BaseCommand
             $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，系统已将其禁用");
             return;
         }
+        try {
+            \DB::beginTransaction();
+            $this->decrAccess($student->netId);
 
-        $this->decrAccess($student->netId);
+            $student->fill([
+                'status' => 'disabled',
+            ])->save();
 
-        $student->fill([
-            'status' => 'disabled',
-        ])->save();
+            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，对其权限予以封禁");
 
-        $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，对其权限予以封禁");
-
-        $this->sendWeChatMessage($student->netId, "Sorry to inform you that your campus access has been removed.\nPlease submit your health declaration form as soon as possible. \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
-
-        return;
+            $this->sendWeChatMessage($student->netId, "Sorry to inform you that your campus access has been removed.\nPlease submit your health declaration form as soon as possible. \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            $this->error("第{$this->index}个人;NetId:{$student->netId}封禁权限出现了异常情况：{$e->getMessage()}");
+            $this->error("第{$this->index}个人;NetId:{$student->netId}：{$e->getTraceAsString()}");
+        }
     }
 
     /**

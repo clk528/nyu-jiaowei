@@ -114,14 +114,24 @@ class EnabledAccessCommand extends BaseCommand
         if ($this->studentExpire($student)) {
             return;
         }
-        $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训予以解封");
-        $this->incrAccess($student->netId);
-        $student->fill([
-            'status' => 'enabled',//恢复状态
-            'alert_total' => 0
-        ])->save();
-        $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration and safety training! Your access privileges are restored now.");
-        dispatch(new SendAccessEnabledJob($student->netId));
+
+        try {
+            \DB::beginTransaction();
+            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}完成了健康申报和安全培训予以解封");
+            $this->incrAccess($student->netId);
+            $student->fill([
+                'status' => 'enabled',//恢复状态
+                'alert_total' => 0
+            ])->save();
+            $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration and safety training! Your access privileges are restored now.");
+            dispatch(new SendAccessEnabledJob($student->netId));
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            $this->error("第{$this->index}个人;NetId:{$student->netId}解封权限出现了异常情况：{$e->getMessage()}");
+            $this->error("第{$this->index}个人;NetId:{$student->netId}：{$e->getTraceAsString()}");
+        }
+
     }
 
     /**
