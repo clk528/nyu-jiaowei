@@ -108,7 +108,7 @@ trait JiaoweiTrait
     private function workFlowExpireTime($expireTime, $netId)
     {
         if (empty($expireTime)) {
-            return true;
+            return false;
         }
 
         $currentDate = time();
