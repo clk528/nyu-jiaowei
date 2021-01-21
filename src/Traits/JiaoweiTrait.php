@@ -75,12 +75,12 @@ trait JiaoweiTrait
         }
 
         if ($isEnableMode) { // 如果是调用模式
-            if ($this->endTime2021($user['endTime'] ?? null, $netId)) {
+            if ($this->endTime2021($user['endTime'] ?? null, $netId)) {// 返回为true 为不满足条件
                 return false;
             }
         }
 
-        if ($this->workFlowExpireTime($user['returnTime'] ?? null, $netId)) {
+        if ($this->workFlowExpireTime($user['returnTime'] ?? null, $netId)) { // 返回为true 为不满足条件
             return false;
         }
 
@@ -108,7 +108,7 @@ trait JiaoweiTrait
     private function workFlowExpireTime($expireTime, $netId)
     {
         if (empty($expireTime)) {
-            return false;
+            return true;
         }
 
         $currentDate = time();
@@ -117,9 +117,9 @@ trait JiaoweiTrait
 
         if ($currentDate < $expireDate) {
             $this->info("第{$this->index}个人，NetId:{$netId}解封日期为：{$expireTime}，不能解封");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
 
