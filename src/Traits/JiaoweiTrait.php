@@ -64,6 +64,7 @@ trait JiaoweiTrait
         $this->info("第{$this->index}个人，NetId:{$netId}申报结果:||" . json_encode($result, JSON_UNESCAPED_UNICODE));
         $data = $result['result'] ?? [];
 
+        // 1: 没有做过健康申报
         if (empty($data)) {
             return false;
         }
@@ -80,10 +81,18 @@ trait JiaoweiTrait
             }
         }
 
-        if ($this->workFlowExpireTime($user['returnTime'] ?? null, $netId)) { // 返回为true 为不满足条件
-            return false;
+        // 2: endTime 小于2021-01-01
+        if(!$isEnableMode){ //如果是禁用模式
+            if ($this->endTime2021($user['endTime'] ?? null, $netId)) {// 返回为true 代表
+                $this->info("第{$this->index}个人，NetId:{$netId} endTime为：".($user['endTime'] ?? null)."，小于2021-01-01 需要封禁");
+                return false;
+            }
         }
+//        if ($this->workFlowExpireTime($user['returnTime'] ?? null, $netId)) { // 返回为true 为不满足条件（endTime 小于2021-01-01)
+//            return false;
+//        }
 
+        // 3：三个码全部不为false
         return !$user['health'] && !$user['tourCode'] && !$user['healthCode'];
     }
 
@@ -96,7 +105,7 @@ trait JiaoweiTrait
         $now = strtotime("2021-01-01 00:00:00");
         $reportTime = strtotime($endTime);
 
-        if ($reportTime >= $now) {
+        if ($reportTime >= $now) { // 报告时间大于 2021-01-01
             $this->info("第{$this->index}个人，NetId:{$netId}报告日期为：{$endTime}，可以解封");
             return false;
         } else {

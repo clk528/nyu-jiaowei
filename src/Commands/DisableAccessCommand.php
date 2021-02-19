@@ -83,7 +83,7 @@ class DisableAccessCommand extends BaseCommand
                     ])->save();
                     $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}已经完成了健康申报和安全培训,恢复它正常状态");
                 } else {
-                    $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}已经完成了健康申报和安全培训");
+                    $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}已经完成了健康申报和安全培训;不需要封禁权限");
                 }
             } else {
 //                $this->fireInthHole($student);
@@ -157,7 +157,7 @@ class DisableAccessCommand extends BaseCommand
                 'status' => 'disabled',
             ])->save();
 
-            $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，对其权限予以封禁");
+            $this->warn("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，对其权限予以封禁");
 
             $this->sendWeChatMessage($student->netId, "Sorry to inform you that your campus access has been removed.\nPlease submit your health declaration form as soon as possible. \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
             \DB::commit();
