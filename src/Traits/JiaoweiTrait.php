@@ -36,6 +36,30 @@ trait JiaoweiTrait
     }
 
     /**
+     * 启用一张卡
+     * @param $netId
+     */
+    private function enableBadge($netId)
+    {
+        $list = [
+            $netId
+        ];
+        $this->accessService->editBadge($list, 'enable', '系统禁用:入学申报完成以及通过安全培训');
+    }
+
+    /**
+     * 禁用一张卡
+     * @param $netId
+     */
+    private function disableBadge($netId)
+    {
+        $list = [
+            $netId
+        ];
+        $this->accessService->editBadge($list, 'disable', '系统禁用:未进行入学申报或未通过安全培训');
+    }
+
+    /**
      * 判断一个netId 是否完成安全培训
      * @param $netid
      * @return bool
@@ -82,9 +106,9 @@ trait JiaoweiTrait
         }
 
         // 2: endTime 小于2021-01-01
-        if(!$isEnableMode){ //如果是禁用模式
+        if (!$isEnableMode) { //如果是禁用模式
             if ($this->endTime2021($user['endTime'] ?? null, $netId)) {// 返回为true 代表
-                $this->info("第{$this->index}个人，NetId:{$netId} endTime为：".($user['endTime'] ?? null)."，小于2021-01-01 需要封禁");
+                $this->info("第{$this->index}个人，NetId:{$netId} endTime为：" . ($user['endTime'] ?? null) . "，小于2021-01-01 需要封禁");
                 return false;
             }
         }

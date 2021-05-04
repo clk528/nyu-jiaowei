@@ -117,7 +117,8 @@ class DisableAccessCommand extends BaseCommand
         if ($student->status == "alert") { // 警告状态
 
             if ($student->alert_total == $this->alertLimit) { // 已经提醒三次了
-                $this->decrAccess($student->netId);
+                //            $this->decrAccess($student->netId);
+                $this->disableBadge($student->netId);
                 $student->fill([
                     'status' => 'disabled',
                 ])->save();
@@ -151,7 +152,8 @@ class DisableAccessCommand extends BaseCommand
         }
         try {
             \DB::beginTransaction();
-            $this->decrAccess($student->netId);
+//            $this->decrAccess($student->netId);
+            $this->disableBadge($student->netId);
 
             $student->fill([
                 'status' => 'disabled',
