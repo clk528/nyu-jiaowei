@@ -105,14 +105,14 @@ trait JiaoweiTrait
             }
         }
 
-        // 2: endTime 小于2021-01-01
+        // 2: endTime 小于2021-08-20
         if (!$isEnableMode) { //如果是禁用模式
             if ($this->endTime2021($user['endTime'] ?? null, $netId)) {// 返回为true 代表
-                $this->info("第{$this->index}个人，NetId:{$netId} endTime为：" . ($user['endTime'] ?? null) . "，小于2021-01-01 需要封禁");
+                $this->info("第{$this->index}个人，NetId:{$netId} endTime为：" . ($user['endTime'] ?? null) . "，小于2021-08-20 需要封禁");
                 return false;
             }
         }
-//        if ($this->workFlowExpireTime($user['returnTime'] ?? null, $netId)) { // 返回为true 为不满足条件（endTime 小于2021-01-01)
+//        if ($this->workFlowExpireTime($user['returnTime'] ?? null, $netId)) { // 返回为true 为不满足条件（endTime 小于2021-08-20)
 //            return false;
 //        }
 
@@ -126,10 +126,10 @@ trait JiaoweiTrait
             return true;
         }
 
-        $now = strtotime("2021-01-01 00:00:00");
+        $now = strtotime("2021-08-20 00:00:00");
         $reportTime = strtotime($endTime);
 
-        if ($reportTime >= $now) { // 报告时间大于 2021-01-01
+        if ($reportTime >= $now) { // 报告时间大于 2021-08-20
             $this->info("第{$this->index}个人，NetId:{$netId}报告日期为：{$endTime}，可以解封");
             return false;
         } else {
