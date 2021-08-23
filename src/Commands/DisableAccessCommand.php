@@ -152,8 +152,8 @@ class DisableAccessCommand extends BaseCommand
         }
         try {
             \DB::beginTransaction();
-//            $this->decrAccess($student->netId);
-            $this->disableBadge($student->netId);
+            $this->decrAccess($student->netId);
+//            $this->disableBadge($student->netId);
 
             $student->fill([
                 'status' => 'disabled',

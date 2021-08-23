@@ -23,7 +23,7 @@ trait JiaoweiTrait
      */
     private function decrAccess($netid)
     {
-        $this->accessService->decrAllAccessTimeByNetId($netid, '2020-09-01 12:00:00', '系统禁用:未进行入学申报');
+        $this->accessService->decrAllAccessTimeByNetId($netid, '2020-09-01 12:00:00', '系统禁用:未完成入学申报');
     }
 
     /**
@@ -56,7 +56,7 @@ trait JiaoweiTrait
         $list = [
             $netId
         ];
-        $this->accessService->editBadge($list, 'disable', '系统禁用:未进行入学申报');
+        $this->accessService->editBadge($list, 'disable', '系统禁用:未完成入学申报');
     }
 
     /**
