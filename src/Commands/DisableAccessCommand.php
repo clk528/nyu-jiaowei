@@ -110,7 +110,7 @@ class DisableAccessCommand extends BaseCommand
                 'status' => 'alert',//设置为警告状态
                 'alert_total' => 1
             ])->save();
-            $this->sendWeChatMessage($student->netId, "Please submit your health declaration form as soon as possible, otherwise your campus access will be removed! \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
+            $this->sendWeChatMessage($student->netId, "Please submit your health declaration form on campus by scanning the dynamic QR code at the reception desk of Public Safety, to restore your campus access.");
             return;
         }
 
@@ -122,7 +122,7 @@ class DisableAccessCommand extends BaseCommand
                 $student->fill([
                     'status' => 'disabled',
                 ])->save();
-                $this->sendWeChatMessage($student->netId, "Sorry to inform you that your campus access has been removed.\nPlease submit your health declaration form as soon as possible. \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
+                $this->sendWeChatMessage($student->netId, "Please submit your health declaration form on campus by scanning the dynamic QR code at the reception desk of Public Safety, to restore your campus access.");
                 $this->info("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，并且已经提醒了{$student->alert_total}次,现在对其权限予以封禁");
                 return;
             }
@@ -136,7 +136,7 @@ class DisableAccessCommand extends BaseCommand
                 'alert_total' => $alertTotal
             ])->save();
 
-            $this->sendWeChatMessage($student->netId, "Please submit your health declaration form as soon as possible, otherwise your campus access will be removed! \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
+            $this->sendWeChatMessage($student->netId, "Please submit your health declaration form on campus by scanning the dynamic QR code at the reception desk of Public Safety, to restore your campus access.");
             return;
         }
     }
@@ -161,7 +161,7 @@ class DisableAccessCommand extends BaseCommand
 
             $this->warn("第{$this->index}个人的状态:{$student->status};NetId:{$student->netId}还未完成健康申报和安全培训，对其权限予以封禁");
 
-            $this->sendWeChatMessage($student->netId, "Sorry to inform you that your campus access has been removed.\nPlease submit your health declaration form as soon as possible. \nLink for Health Declaration：https://review.shanghai.nyu.edu/health-declaration");
+            $this->sendWeChatMessage($student->netId, "Please submit your health declaration form on campus by scanning the dynamic QR code at the reception desk of Public Safety, to restore your campus access.");
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollBack();

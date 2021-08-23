@@ -124,7 +124,7 @@ class EnabledAccessCommand extends BaseCommand
                 'status' => 'enabled',//恢复状态
                 'alert_total' => 0
             ])->save();
-            $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration and safety training! Your access privileges are restored now.");
+            $this->sendWeChatMessage($student->netId, "Thanks for your time on the health declaration! Your access privileges are restored now.");
             dispatch(new SendAccessEnabledJob($student->netId));
             \DB::commit();
         } catch (\Exception $e) {
